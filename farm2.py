@@ -16,21 +16,21 @@ class AnimalDB:
 
 
 class Animal:
-    animal_count = 0
+    count = 0
     sound = '*silence*'  # на случай появления на ферме рыб и черепах
 
     def __init__(self, name, gender=None, weight=None):
         self.name = name
         self.gender = gender
         self.weight = weight
-        self.animal_id = self.animal_count  # уникальный номер каждой зверушке, в лучших традициях
-        self.animal_count += 1
+        self.id = Animal.count  # уникальный номер каждой зверушке, в лучших традициях
+        Animal.count += 1
 
     def eats(self, food):
         self.weight += food / 5  # с прошлого раза калорийность удвоилась
 
     def makes_sound(self):
-        print(self.sound)
+        return print(self.sound)
 
 
 class Bird(Animal):
@@ -125,35 +125,15 @@ animal_farm.add_animal(Goat('Копыта', 'F', 26))
 animal_farm.add_animal(Duck('Кряква', 'F', 3))
 
 # примеры взаимодействия
-##print('Гусь говорит:', end=' ')
-##gray.makes_sound()
-##print(f'Серый весит {gray.weight} кило')
-##gray.eats(1)
-##print(f'Серый весит после еды {gray.weight} кило')
-##gray.lays_egg()
-##print()
-##print('Корова говорит:', end=' ')
-##manka.makes_sound()
-##manka.makes_milk(10)
-##manka.milk()
-##print()
-##print('Овечка говорит:', end=' ')
-##barashek.makes_sound()
-##manka.eats(3)
-##barashek.grows_wool(5)
-##barashek.shear()
-##barashek.shear()
-##print()
-##print('Курочка говорит:', end=' ')
-##koko.makes_sound()
-##print('Петушок говорит:', end=' ')
-##kukareku.makes_sound()
-##for _ in range(3): koko.lays_egg()
-##kukareku.lays_egg()
-##koko.collect_eggs()
-##koko.lays_egg()
-##koko.collect_eggs()
-##print()
+for animal in animal_farm.get_animal():
+    print(f'{animal.id:_<3}{animal.species:_<9}{animal.name}')
+
+[animal.makes_sound() for animal in animal_farm.get_animal() if animal.id == 2]
+[animal.makes_milk(7) for animal in animal_farm.get_animal() if animal.id == 2]
+[animal.milk() for animal in animal_farm.get_animal() if animal.id == 2]
+
+[animal.makes_sound() for animal in animal_farm.get_animal() if animal.species == 'goose']
+
 
 # Задание 2
 total_weight = sum(animal.weight for animal in animal_farm.get_animal())
