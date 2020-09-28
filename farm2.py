@@ -30,7 +30,7 @@ class Animal:
         self.weight += food / 5  # с прошлого раза калорийность удвоилась
 
     def makes_sound(self):
-        return print(self.sound)
+        return self.sound
 
 
 class Bird(Animal):
@@ -40,14 +40,14 @@ class Bird(Animal):
         if self.gender == 'F':
             self.eggs += 1
         else:
-            print(f'{self.name} refuses to lay eggs. He is a boy')
+            return f'{self.name} refuses to lay eggs. He is a boy'
 
     def collect_eggs(self):
         if self.eggs:
-            print(f'{self.name} gives {self.eggs} egg{"s" if self.eggs > 1 else ""}')
-            self.eggs = 0
+            self.eggs, temp_eggs = 0, self.eggs
+            return f'{self.name} gives {temp_eggs} egg{"s" if temp_eggs > 1 else ""}'
         else:
-            print('No eggs')
+            return 'No eggs'
 
 
 class DairyAnimal(Animal):
@@ -56,15 +56,16 @@ class DairyAnimal(Animal):
     def makes_milk(self, amount=1):
         if self.gender == 'F':
             self.milk_inside += amount
+            return
         else:
-            print(f'{self.name} refuses to make milk. He is a boy')
+            return f'{self.name} refuses to make milk. He is a boy'
 
     def milk(self):
         if self.milk_inside:
-            print(f'{self.name} gives {self.milk_inside} liter{"s" if self.milk_inside > 1 else ""} of milk')
-            self.milk_inside = 0
+            self.milk_inside, temp_milk = 0, self.milk_inside
+            return f'{self.name} gives {temp_milk} liter{"s" if temp_milk > 1 else ""} of milk'
         else:
-            print('No milk')        
+            return 'No milk'
 
 
 class Goose(Bird):
@@ -77,9 +78,9 @@ class Chicken(Bird):
 
     def makes_sound(self):
         if self.gender == 'M':
-            print('Cock-a-doodle-doo')
+            return 'Cock-a-doodle-doo'
         else:
-            print('Cluck')
+            return 'Cluck'
 
 
 class Duck(Bird):
@@ -102,10 +103,10 @@ class Sheep(Animal):
 
     def shear(self):
         if self.wool:
-            print(f'{self.name} gives {self.wool} kilogramm{"s" if self.wool > 1 else ""} of wool')
-            self.wool = 0
+            self.wool, temp_wool = 0, self.wool
+            return f'{self.name} gives {temp_wool} kilogramm{"s" if temp_wool > 1 else ""} of wool'
         else:
-            print('No wool yet')
+            return 'No wool yet'
 
 
 class Goat(DairyAnimal):
@@ -113,30 +114,31 @@ class Goat(DairyAnimal):
     sound = 'Bleat'
 
 
-animal_farm = AnimalDB()
-animal_farm.add_animal(Goose('Серый', 'M', 5))
-animal_farm.add_animal(Goose('Белый', 'M', 6))
-animal_farm.add_animal(Cow('Манька', 'F', 500))
-animal_farm.add_animal(Sheep('Барашек', 'M', 50))
-animal_farm.add_animal(Chicken('Ко-Ко', 'F', 2))
-animal_farm.add_animal(Chicken('Кукареку', 'M', 2))
-animal_farm.add_animal(Goat('Рога', 'F', 25))
-animal_farm.add_animal(Goat('Копыта', 'F', 26))
-animal_farm.add_animal(Duck('Кряква', 'F', 3))
-
-# примеры взаимодействия
-for animal in animal_farm.get_animal():
-    print(f'{animal.id:_<3}{animal.species:_<9}{animal.name}')
-
-[animal.makes_sound() for animal in animal_farm.get_animal() if animal.id == 2]
-[animal.makes_milk(7) for animal in animal_farm.get_animal() if animal.id == 2]
-[animal.milk() for animal in animal_farm.get_animal() if animal.id == 2]
-
-[animal.makes_sound() for animal in animal_farm.get_animal() if animal.species == 'goose']
-
+farm = AnimalDB()
+farm.add_animal(Goose('Серый', 'M', 5))
+farm.add_animal(Goose('Белый', 'M', 6))
+farm.add_animal(Cow('Манька', 'F', 500))
+farm.add_animal(Sheep('Барашек', 'M', 50))
+farm.add_animal(Chicken('Ко-Ко', 'F', 2))
+farm.add_animal(Chicken('Кукареку', 'M', 2))
+farm.add_animal(Goat('Рога', 'F', 25))
+farm.add_animal(Goat('Копыта', 'F', 26))
+farm.add_animal(Duck('Кряква', 'F', 3))
 
 # Задание 2
-total_weight = sum(animal.weight for animal in animal_farm.get_animal())
-max_weight = sorted([(animal.weight, animal.name) for animal in animal_farm.get_animal()])[-1]
-print(f'Общий вес животных: {total_weight} килограмм')
-print(f'Самое тяжелое животное: {max_weight[1]} - {max_weight[0]} килограмм')
+for animal in farm.get_animal(): #  список животных с фиксированной шириной колонок
+    print(f'{animal.id:_<3}{animal.species:_<9}{animal.name}')
+
+print()
+
+for animal in farm.get_animal(): #  животные шумят
+    print(f'{animal.species} {animal.name} says {animal.makes_sound()}')
+
+print()
+
+print(f'Geese list: {[animal.name for animal in farm.get_animal() if animal.species == "goose"]}') #  список всех гусей
+
+print()
+
+[animal.makes_milk(7) for animal in farm.get_animal() if animal.id == 2] #  корова Манька нагуливает молоко
+[print(animal.milk()) for animal in farm.get_animal() if animal.id == 2] #  Маньку подоили
